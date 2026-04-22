@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Panel Bichito v1</title>
+  <style>
+    :root {
+      --bg: #0b0f14;
+      --panel: #121821;
+      --panel-2: #18212c;
+      --text: #e8eef7;
+      --muted: #9fb0c3;
+      --line: #253244;
+      --accent: #6ea8fe;
+      --accent-2: #8b5cf6;
+      --ok: #22c55e;
+      --warn: #f59e0b;
+      --err: #ef4444;
+      --shadow: 0 10px 30px rgba(0,0,0,.28);
+      --radius: 16px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: linear-gradient(180deg, #0b0f14 0%, #0e131b 100%);
+      color: var(--text);
+    }
+    .app { min-height: 100vh; display: grid; grid-template-columns: 260px 1fr; }
+    .sidebar {
+      border-right: 1px solid var(--line);
+      background: rgba(10,14,20,.78);
+      backdrop-filter: blur(10px);
+      padding: 24px 18px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+    .brand { font-weight: 800; font-size: 22px; margin-bottom: 28px; }
+    .brand small { display: block; color: var(--muted); font-weight: 500; margin-top: 6px; font-size: 13px; }
+    .nav { display: flex; flex-direction: column; gap: 10px; }
+    .nav a {
+      color: var(--text); text-decoration: none; padding: 12px 14px; border-radius: 12px;
+      background: transparent; border: 1px solid transparent; display: block;
+    }
+    .nav a.active, .nav a:hover { background: var(--panel); border-color: var(--line); }
+    .content { padding: 28px; }
+    .mobile-topbar, .mobile-quicknav { display: none; }
+    .hero { margin-bottom: 22px; }
+    .hero h1 { margin: 0 0 8px; font-size: 32px; }
+    .hero p { margin: 0; color: var(--muted); max-width: 860px; line-height: 1.5; }
+    .quick { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+    .chip {
+      display: inline-flex; align-items: center; justify-content: center; padding: 12px 14px;
+      border-radius: 14px; background: var(--panel); border: 1px solid var(--line);
+      color: var(--text); font-size: 14px; text-decoration: none; min-width: 160px;
+    }
+    .chip:hover { border-color: var(--accent); }
+    .section {
+      margin-bottom: 18px; background: linear-gradient(180deg, rgba(18,24,33,.95), rgba(14,19,27,.95));
+      border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 18px;
+    }
+    .section-head { display: flex; justify-content: space-between; gap: 12px; align-items: end; margin-bottom: 14px; }
+    .section-title { color: var(--text); text-decoration: none; }
+    .section-title:hover h2 { color: var(--accent); }
+    .section h2 { margin: 0 0 6px; font-size: 19px; }
+    .sub { color: var(--muted); font-size: 14px; margin: 0; }
+    .cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    .cards.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .card { background: var(--panel-2); border: 1px solid var(--line); border-radius: 14px; padding: 14px; min-height: 120px; }
+    .row { display: flex; justify-content: space-between; gap: 12px; align-items: center; }
+    .title { font-weight: 700; }
+    .meta { color: var(--muted); font-size: 13px; margin-top: 4px; line-height: 1.4; }
+    .status {
+      font-size: 12px; font-weight: 700; padding: 7px 10px; border-radius: 999px;
+      border: 1px solid var(--line); white-space: nowrap;
+    }
+    .ok { color: var(--ok); }
+    .warn { color: var(--warn); }
+    button, .new-btn, .open-link {
+      border: 1px solid var(--line); background: #111826; color: var(--text); padding: 10px 12px;
+      border-radius: 10px; cursor: pointer; text-decoration: none; display: inline-flex;
+      align-items: center; justify-content: center; font-size: 14px;
+    }
+    .new-btn { min-width: 74px; }
+    .open-link { margin-top: 12px; width: 100%; }
+    .footer-note { margin-top: 18px; font-size: 13px; color: var(--muted); }
+    @media (max-width: 1180px) { .cards, .cards.two { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 980px) {
+      .app { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .content { padding: 16px 16px 92px; }
+      .mobile-topbar {
+        display: flex; align-items: center; justify-content: space-between; gap: 12px; position: sticky; top: 0;
+        z-index: 20; margin: -16px -16px 18px; padding: 14px 16px; background: rgba(10,14,20,.88);
+        backdrop-filter: blur(10px); border-bottom: 1px solid var(--line);
+      }
+      .mobile-brand { font-weight: 800; font-size: 18px; }
+      .mobile-brand small { display: block; color: var(--muted); font-size: 12px; font-weight: 500; margin-top: 3px; }
+      .hamburger {
+        display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px;
+        border-radius: 12px; border: 1px solid var(--line); background: var(--panel); color: var(--text);
+        text-decoration: none; font-size: 20px;
+      }
+      .hero h1 { font-size: 26px; }
+      .quick { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .mobile-quicknav {
+        display: flex; gap: 8px; overflow-x: auto; position: fixed; left: 0; right: 0; bottom: 0; z-index: 30;
+        padding: 10px 12px calc(10px + env(safe-area-inset-bottom)); background: rgba(10,14,20,.92);
+        backdrop-filter: blur(12px); border-top: 1px solid var(--line);
+      }
+      .mobile-quicknav a {
+        flex: 0 0 auto; color: var(--text); text-decoration: none; font-size: 11px; text-align: center;
+        padding: 10px 12px; border-radius: 12px; background: var(--panel); border: 1px solid var(--line); min-width: 84px;
+      }
+    }
+    @media (max-width: 700px) {
+      .cards, .cards.two, .quick { grid-template-columns: 1fr; }
+      .section-head { align-items: start; }
+      .card { min-height: auto; }
+      .row { align-items: start; flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">Panel Bichito<small>Wireframe v1</small></div>
+      <nav class="nav">
+        <a class="active" href="./index.html">Dashboard</a>
+        <a href="./subagentes.html">Subagentes</a>
+        <a href="./clients.html">Clientes</a>
+        <a href="./projects.html">Proyectos</a>
+        <a href="./tasks.html">Tareas recurrentes</a>
+        <a href="./future.html">Tareas futuras</a>
+        <a href="./activity.html">Actividad</a>
+      </nav>
+      <div class="footer-note">Dashboard general con paneles resumidos.</div>
+    </aside>
+    <main class="content">
+      <div class="mobile-topbar">
+        <div class="mobile-brand">Panel Bichito<small>Dashboard general</small></div>
+        <a class="hamburger" href="./subagentes.html" aria-label="Abrir subagentes">☰</a>
+      </div>
+
+      <section class="hero">
+        <h1>Dashboard</h1>
+        <p>Zona de control con acceso directo a los paneles generales y a las vistas detalladas de cada menú.</p>
+        <div class="quick">
+          <a class="chip" href="./subagentes.html">Subagentes</a>
+          <a class="chip" href="./clients.html">Clientes</a>
+          <a class="chip" href="./projects.html">Proyectos</a>
+          <a class="chip" href="./tasks.html">Tareas recurrentes</a>
+          <a class="chip" href="./future.html">Tareas futuras</a>
+          <a class="chip" href="./activity.html">Actividad</a>
+        </div>
+      </section>
+
+      <section class="section" id="subagentes">
+        <div class="section-head">
+          <a class="section-title" href="./subagentes.html"><div><h2>Subagentes</h2><p class="sub">Listado general con acceso al panel detallado.</p></div></a>
+          <a class="new-btn" href="./subagentes.html#nuevo">Nuevo</a>
+        </div>
+        <div class="cards">
+          <div class="card"><div class="row"><div><div class="title">n8n</div><div class="meta">Crear, editar y revisar workflows</div></div><div class="status ok">inactivo</div></div><a class="open-link" href="./subagentes.html#n8n">Abrir panel</a></div>
+          <div class="card"><div class="row"><div><div class="title">Odoo 18</div><div class="meta">Operación y soporte sobre CRM, presupuestos y facturación</div></div><div class="status warn">pendiente</div></div><a class="open-link" href="./subagentes.html#odoo">Abrir panel</a></div>
+          <div class="card"><div class="row"><div><div class="title">Marketing</div><div class="meta">Funnels, buyer persona, correos y estrategia</div></div><div class="status warn">pendiente</div></div><a class="open-link" href="./subagentes.html#marketing">Abrir panel</a></div>
+        </div>
+      </section>
+
+      <section class="section" id="clientes">
+        <div class="section-head">
+          <a class="section-title" href="./clients.html"><div><h2>Clientes</h2><p class="sub">Panel general con acceso a sus fichas.</p></div></a>
+          <a class="new-btn" href="./clients.html#nuevo">Nuevo</a>
+        </div>
+        <div class="cards">
+          <div class="card"><div class="title">Cultura Castellana</div><div class="meta">Publicación y automatización de contenidos</div></div>
+          <div class="card"><div class="title">Famosa</div><div class="meta">Creación y modificación de proyectos</div></div>
+          <div class="card"><div class="title">Cliente por definir</div><div class="meta">Espacio de ejemplo para futuras fichas</div></div>
+        </div>
+      </section>
+
+      <section class="section" id="proyectos">
+        <div class="section-head">
+          <a class="section-title" href="./projects.html"><div><h2>Proyectos</h2><p class="sub">Panel general de contextos propios.</p></div></a>
+          <a class="new-btn" href="./projects.html#nuevo">Nuevo</a>
+        </div>
+        <div class="cards">
+          <div class="card"><div class="title">Odoo</div><div class="meta">Uso general, CRM y presupuestos</div></div>
+          <div class="card"><div class="title">WordPress</div><div class="meta">Publicación, Divi y dudas técnicas</div></div>
+          <div class="card"><div class="title">SEO</div><div class="meta">Ideas, tareas y análisis</div></div>
+        </div>
+      </section>
+
+      <section class="section" id="tareas">
+        <div class="section-head">
+          <a class="section-title" href="./tasks.html"><div><h2>Tareas recurrentes</h2><p class="sub">Panel general de tareas estructuradas.</p></div></a>
+          <a class="new-btn" href="./tasks.html#nuevo">Nuevo</a>
+        </div>
+        <div class="cards two">
+          <div class="card"><div class="title">Pliego de negociaciones</div><div class="meta">Crear documento guiado a partir de directrices</div></div>
+          <div class="card"><div class="title">Publicación de WordPress</div><div class="meta">Preparar publicación con contenido e imagen</div></div>
+        </div>
+      </section>
+
+      <section class="section" id="futuro">
+        <div class="section-head">
+          <a class="section-title" href="./future.html"><div><h2>Tareas futuras</h2><p class="sub">Panel general de crecimiento y roadmap.</p></div></a>
+          <a class="new-btn" href="./future.html#nuevo">Nuevo</a>
+        </div>
+        <div class="cards">
+          <div class="card"><div class="title">Agente especializado para n8n</div><div class="meta">Crear, editar y activar workflows con restricciones fuertes.</div></div>
+          <div class="card"><div class="title">Publicación en WordPress desde OpenClaw</div><div class="meta">Subir contenido desde email o instrucciones estructuradas.</div></div>
+          <div class="card"><div class="title">Backups Google Drive a SQLite</div><div class="meta">Guardar datos reutilizables y copia en Drive secundario.</div></div>
+        </div>
+      </section>
+
+      <section class="section" id="actividad">
+        <div class="section-head">
+          <a class="section-title" href="./activity.html"><div><h2>Actividad</h2><p class="sub">Panel general de registro resumido.</p></div></a>
+          <a class="new-btn" href="./activity.html#nuevo">Nuevo</a>
+        </div>
+        <div class="cards">
+          <div class="card"><div class="title">Arquitectura del panel</div><div class="meta">Se confirmó la estructura inicial de Panel Bichito.</div></div>
+          <div class="card"><div class="title">n8n</div><div class="meta">Se registró “101 - Maestro de podcast” como activo.</div></div>
+          <div class="card"><div class="title">Future tasks</div><div class="meta">Se añadieron tareas de WordPress, Drive y resúmenes de audio.</div></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <nav class="mobile-quicknav" aria-label="Navegación rápida móvil">
+    <a href="./index.html">Inicio</a>
+    <a href="./subagentes.html">Agentes</a>
+    <a href="./clients.html">Clientes</a>
+    <a href="./tasks.html">Tareas</a>
+    <a href="./future.html">Futuro</a>
+    <a href="./activity.html">Actividad</a>
+  </nav>
+</body>
+</html>
