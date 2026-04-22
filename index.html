@@ -47,7 +47,7 @@
     }
     .nav a.active, .nav a:hover { background: var(--panel); border-color: var(--line); }
     .content { padding: 28px; }
-    .mobile-topbar, .mobile-quicknav { display: none; }
+    .mobile-topbar, .mobile-quicknav, .mobile-menu-panel { display: none; }
     .hero { margin-bottom: 22px; }
     .hero h1 { margin: 0 0 8px; font-size: 32px; }
     .hero p { margin: 0; color: var(--muted); max-width: 860px; line-height: 1.5; }
@@ -99,11 +99,23 @@
       }
       .mobile-brand { font-weight: 800; font-size: 18px; }
       .mobile-brand small { display: block; color: var(--muted); font-size: 12px; font-weight: 500; margin-top: 3px; }
+      .mobile-menu { position: relative; }
       .hamburger {
-        display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px;
+        list-style: none; display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px;
         border-radius: 12px; border: 1px solid var(--line); background: var(--panel); color: var(--text);
-        text-decoration: none; font-size: 20px;
+        text-decoration: none; font-size: 20px; cursor: pointer;
       }
+      .hamburger::-webkit-details-marker { display: none; }
+      .mobile-menu-panel {
+        position: absolute; right: 0; top: 52px; min-width: 240px; padding: 10px; z-index: 40;
+        background: rgba(10,14,20,.98); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow);
+      }
+      .mobile-menu[open] .mobile-menu-panel { display: block; }
+      .mobile-menu-panel a {
+        display: block; color: var(--text); text-decoration: none; padding: 12px 14px; border-radius: 12px;
+        border: 1px solid transparent;
+      }
+      .mobile-menu-panel a:hover, .mobile-menu-panel a.active { background: var(--panel); border-color: var(--line); }
       .hero h1 { font-size: 26px; }
       .quick { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .mobile-quicknav {
@@ -113,7 +125,7 @@
       }
       .mobile-quicknav a {
         flex: 0 0 auto; color: var(--text); text-decoration: none; font-size: 11px; text-align: center;
-        padding: 10px 12px; border-radius: 12px; background: var(--panel); border: 1px solid var(--line); min-width: 84px;
+        padding: 10px 12px; border-radius: 12px; background: var(--panel); border: 1px solid var(--line); min-width: 110px;
       }
     }
     @media (max-width: 700px) {
@@ -142,7 +154,18 @@
     <main class="content">
       <div class="mobile-topbar">
         <div class="mobile-brand">Panel Bichito<small>Dashboard general</small></div>
-        <a class="hamburger" href="./subagentes.html" aria-label="Abrir subagentes">☰</a>
+        <details class="mobile-menu">
+          <summary class="hamburger" aria-label="Abrir menú">☰</summary>
+          <nav class="mobile-menu-panel">
+            <a class="active" href="./index.html">Dashboard</a>
+            <a href="./subagentes.html">Subagentes</a>
+            <a href="./clients.html">Clientes</a>
+            <a href="./projects.html">Proyectos</a>
+            <a href="./tasks.html">Tareas recurrentes</a>
+            <a href="./future.html">Tareas futuras</a>
+            <a href="./activity.html">Actividad</a>
+          </nav>
+        </details>
       </div>
 
       <section class="hero">
@@ -232,11 +255,12 @@
   </div>
 
   <nav class="mobile-quicknav" aria-label="Navegación rápida móvil">
-    <a href="./index.html">Inicio</a>
-    <a href="./subagentes.html">Agentes</a>
+    <a href="./index.html">Dashboard</a>
+    <a href="./subagentes.html">Subagentes</a>
     <a href="./clients.html">Clientes</a>
-    <a href="./tasks.html">Tareas</a>
-    <a href="./future.html">Futuro</a>
+    <a href="./projects.html">Proyectos</a>
+    <a href="./tasks.html">Tareas recurrentes</a>
+    <a href="./future.html">Tareas futuras</a>
     <a href="./activity.html">Actividad</a>
   </nav>
 </body>
